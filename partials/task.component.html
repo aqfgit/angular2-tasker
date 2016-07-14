@@ -1,0 +1,49 @@
+<header class="input-wrap">
+  <h1>Tasks</h1>
+  <form>
+    <button class="btn add-btn" (click)="addTask()">Add</button>
+    <input type="text" id="task-input" (keypress.enter)="addTask()">
+  </form>
+</header>
+<main class="content">
+      <div class="schedule">
+        <h2>To do</h2>
+        <button class="btn clear-btn" id="toDo" (click)="clearTable($event)">Clear table</button>
+          <table id="toDoTable">
+          <tr *ngFor="let task of tasks">
+            <td *ngIf='task.state == "toDo"'>{{ task.name }}</td>
+            <td *ngIf='task.state == "toDo"'><button class="btn start-btn" (click)="startTimer(task)">Start</button></td>
+            <td *ngIf='task.state == "toDo"'><button class="btn delete-btn" (click)="deleteTask(task)">X</button></td>
+          </tr>
+          </table>
+        </div>
+
+        <div class="schedule">
+          <h2>In progress</h2>
+          <button class="btn clear-btn" id="inProgress" (click)="clearTable($event)">Clear table</button>
+            <table id="inProgressTable">
+            <tr *ngFor="let task of tasks">
+              <td *ngIf='task.state == "inProgress"'>{{ task.name }}</td>
+              <td *ngIf='task.state == "inProgress"'>{{ task.timeInSec.toHHMMSS() }}</td>
+              <td *ngIf='task.stopped === true && task.state == "inProgress"'><button class="btn start-btn" (click)="startTimer(task)">Start</button></td>
+              <td *ngIf='task.stopped === false && task.state == "inProgress"'><button class="btn stop-btn" (click)="stopTimer(task)">Stop</button></td>
+              <td *ngIf='task.state == "inProgress"'><button class="btn reset-btn" (click)="resetTimer(task)">Reset</button></td>
+              <td *ngIf='task.state == "inProgress"'><button class="btn end-btn" (click)="endTask(task)">End</button></td>
+              <td *ngIf='task.state == "inProgress"'><button class="btn delete-btn" (click)="deleteTask(task)">X</button></td>
+            </tr>
+            </table>
+          </div>
+    <div class="schedule">
+      <div class="schedule">
+        <h2>Done</h2>
+        <button class="btn clear-btn" id="done" (click)="clearTable($event)">Clear table</button>
+          <table id="doneTable">
+          <tr *ngFor="let task of tasks">
+            <td *ngIf='task.state == "done"'>{{ task.name }}</td>
+            <td *ngIf='task.state == "done"'>{{ task.timeInSec.toHHMMSS() }}</td>
+            <td *ngIf='task.state == "done"'><button class="btn delete-btn" (click)="deleteTask(task)">X</button></td>
+          </tr>
+          </table>
+        </div>
+      </div>
+  </main>
