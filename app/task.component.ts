@@ -55,7 +55,7 @@ export class TaskComponent implements OnInit{
     for(let i = 0; i < this.tasks.length; i++){
       if(this.tasks[i].state === "inProgress" && this.tasks[i].stopped === false){
         this.tasks[i].timeInSec++;
-        this.tasks[i].timeInSec.toHHMMSS();
+        this.tasks[i].timeInSec.toHHMMSS();// toHHMMSS() is a number portotype -> js/main.js
       }
   }, 1000)
 }
