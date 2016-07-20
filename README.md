@@ -12,6 +12,6 @@
 ```
 
 ### Improvements over vanilla JS Tasker
-1.Only 1 taks at the time
-2.No duplicate names
-3.More efficient timers controller - one timer handling all the tasks
+####1.Only 1 taks at the time
+####2.No duplicate names
+####3.More efficient timers controller - one timer handling all the tasks
