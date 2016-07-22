@@ -13,6 +13,7 @@ import { OnInit } from '@angular/core';
 
 export class TaskComponent implements OnInit{
   tasks: Task[];
+  inputText = '';
 
   constructor(private taskService: TaskService) { }
 
@@ -26,15 +27,15 @@ export class TaskComponent implements OnInit{
    }
 
   addTask() {
-    let taskName = document.getElementById("task-input").value;
+    //let taskName = document.getElementById("task-input").value;
     for(let i = 0; i < this.tasks.length; i++){
-      if(this.tasks[i].name === taskName){
+      if(this.tasks[i].name === this.inputText){
         setTimeout(function() { alert('this name exists already!'); }, 1);
         return;
       }
     }
-     this.tasks.push({name: taskName, state: "toDo", timeInSec: 0});
-     document.getElementById("task-input").value = '';
+     this.tasks.push({name: this.inputText, state: "toDo", timeInSec: 0});
+     this.inputText = '';
    }
 
   deleteTask(currentTask: Task) {
@@ -85,19 +86,20 @@ export class TaskComponent implements OnInit{
     currentTask.stopped = true;
   }
 
-  clearTable(e) {
+  clearTable(state) {
     function doesTaskExists(element, index, array) {
-      return array[index].state === e.target.id;
+      return !(array[index].state === state);
     }
 
     this.tasks.forEach((t: Task) => {
-      if(e.target.id === t.state) {
-        if(!(this.tasks.every(doesTaskExists))) {
+      if(state === t.state) {
+        if(this.tasks.every(doesTaskExists)) {
           return;
         }
-        this.tasks.splice(this.tasks.indexOf(t));
-        this.clearTable(e);
+        this.tasks.splice(this.tasks.indexOf(t), 1);
+        this.clearTable(state);
       }
     });
   }
+
 }
