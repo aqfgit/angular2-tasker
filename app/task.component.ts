@@ -10,6 +10,7 @@ import { OnInit } from '@angular/core';
   providers: [TaskService]
 
 })
+
 export class TaskComponent implements OnInit{
   tasks: Task[];
 
@@ -20,87 +21,83 @@ export class TaskComponent implements OnInit{
   }
 
   ngOnInit() {
-   this.getTasks();
-   this.timeHandler();
- }
-
- addTask() {
-   let taskName = document.getElementById("task-input").value;
-   for(let i = 0; i < this.tasks.length; i++){
-     if(this.tasks[i].name === taskName){
-       setTimeout(function() { alert('this name exists already!'); }, 1);
-       return;
-     }
+    this.getTasks();
+    this.timerHandler();
    }
-   this.tasks.push({name: taskName, state: "toDo", timeInSec: 0});
-   document.getElementById("task-input").value = '';
- }
 
- deleteTask(currentTask: Task) {
-   for(let i = 0; i < this.tasks.length; i++){
-     if(this.tasks[i] === currentTask){
-       this.tasks.splice(i,1)
-       break;
-     }
-   }
- }
-
- endTask(currentTask: Task) {
-   currentTask.state = 'done';
-   currentTask.stopped = true;
- }
-
- timeHandler() {
-  let timer = setInterval(() => {
+  addTask() {
+    let taskName = document.getElementById("task-input").value;
     for(let i = 0; i < this.tasks.length; i++){
-      if(this.tasks[i].state === "inProgress" && this.tasks[i].stopped === false){
-        this.tasks[i].timeInSec++;
-        this.tasks[i].timeInSec.toHHMMSS();// toHHMMSS() is a number portotype -> js/main.js
+      if(this.tasks[i].name === taskName){
+        setTimeout(function() { alert('this name exists already!'); }, 1);
+        return;
       }
-  }, 1000)
-}
-
-startTimer(currentTask: Task) {
-  for(let i = 0; i < this.tasks.length; i++){
-    if(this.tasks[i].stopped === false && (currentTask.state !== "inProgress" || currentTask.stopped === true  )){
-      setTimeout(function() { alert('other task is running already'); }, 1);
-      return;
     }
+     this.tasks.push({name: taskName, state: "toDo", timeInSec: 0});
+     document.getElementById("task-input").value = '';
+   }
+
+  deleteTask(currentTask: Task) {
+    this.tasks.forEach((t: Task) => {
+      if(t === currentTask) {
+        this.tasks.splice(this.tasks.indexOf(t), 1);
+      }
+    });
+   }
+
+  endTask(currentTask: Task) {
+    currentTask.state = 'done';
+    currentTask.stopped = true;
+   }
+
+  timerHandler() {
+    let timer = setInterval(() => {
+      this.tasks.forEach((t: Task) => {
+          if(t.state === 'inProgress' && t.stopped === false) {
+            t.timeInSec++;
+          }
+      });
+    }, 1000)
   }
-  currentTask.state = "inProgress";
-  currentTask.stopped = false;
-  console.log(currentTask.parentNode);
-}
+
+  startTimer(currentTask: Task) {
+    let shouldReturn;
+
+    this.tasks.forEach((t: Task) => {
+      if(t.stopped === false && (currentTask.state !== 'inProgress' || currentTask.stopped === true)) {
+        alert('Other task is running already!');
+        shouldReturn = true;
+      }
+    });
+
+    if(shouldReturn) return;
+
+    currentTask.state = "inProgress";
+    currentTask.stopped = false;
+  }
 
   stopTimer(currentTask: Task) {
     currentTask.stopped = true;
-}
+  }
 
   resetTimer(currentTask: Task) {
     currentTask.timeInSec = 0;
     currentTask.stopped = true;
   }
 
-clearTable(e) {
+  clearTable(e) {
+    function doesTaskExists(element, index, array) {
+      return array[index].state === e.target.id;
+    }
 
-  function isTableEmpty(arr, e) {
-    for(let i = 0; i < arr.length; i++) {
-      if(arr[i].state === e.target.id) {
-        return false;
+    this.tasks.forEach((t: Task) => {
+      if(e.target.id === t.state) {
+        if(!(this.tasks.every(doesTaskExists))) {
+          return;
+        }
+        this.tasks.splice(this.tasks.indexOf(t));
+        this.clearTable(e);
       }
-    }
-    return true;
+    });
   }
-
-  for(let i = 0; i < this.tasks.length; i++){ //
-    if(e.target.id === this.tasks[i].state){  //   1.Search for tasks, that has state equal to button's id
-      if(isTableEmpty(this.tasks, e)) {        //   2.If there is nothing to search for,
-        return;                               //     escape from function
-      }                                       //
-      this.tasks.splice(i,1);                 //  3.Remove task
-      this.clearTable(e);                      //  4.Start searching for another tasks
-    }
-  }
-}
-
 }
